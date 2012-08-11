@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: tenki.rb</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>tenki.rb</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>tenki.rb
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Sat Aug 11 19:37:14 +0900 2012</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1>tenki.rb</h1>
+<pre>
+  日本の週間天気を表示するコマンドラインスクリプト
+</pre>
+<h2>History</h2>
+<pre>
+ version 1.0.0 2012/08/11 First version
+</pre>
+<h2>Information</h2>
+<pre>
+ このスクリプトは、「Weather Hacks」というWeb APIを利用しています。
+ 詳細は、下記のURLを確認してください。素晴らしいAPIの提供ありがとう。
+
+ http://weather.livedoor.com/weather_hacks/
+</pre>
+<table>
+<tr><td valign="top">Author:</td><td>sbkro (sbkro.apps@gmail.com)
+
+</td></tr>
+<tr><td valign="top">CopyLight:</td><td>Copyright (c) 2012 sbkro-apps. All rights reserved.
+
+</td></tr>
+<tr><td valign="top">License:</td><td>MIT License
+
+</td></tr>
+</table>
+
+    </div>
+
+    <div id="requires-list">
+      <h3 class="section-bar">Required files</h3>
+
+      <div class="name-list">
+      uri&nbsp;&nbsp;
+      net/http&nbsp;&nbsp;
+      rexml/document&nbsp;&nbsp;
+      </div>
+    </div>
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000003">build_weather_summary</a>&nbsp;&nbsp;
+      <a href="#M000001">create_dom</a>&nbsp;&nbsp;
+      <a href="#M000004">display</a>&nbsp;&nbsp;
+      <a href="#M000006">display_usage</a>&nbsp;&nbsp;
+      <a href="#M000002">search_source_url_by_city_code</a>&nbsp;&nbsp;
+      <a href="#M000005">validate_args</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+    <div id="includes">
+      <h3 class="section-bar">Included Modules</h3>
+
+      <div id="includes-list">
+        <span class="include-name">REXML</span>
+      </div>
+    </div>
+
+    <div id="section">
+
+
+    <div id="constants-list">
+      <h3 class="section-bar">Constants</h3>
+
+      <div class="name-list">
+        <table summary="Constants">
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">FORECAST_MAP_URL</td>
+          <td>=</td>
+          <td class="context-item-value">&quot;http://weather.livedoor.com/forecast/rss/forecastmap.xml&quot;</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+一次細分区分定義表URL（XML形式）
+
+</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">XPATH_RSS_TITLE</td>
+          <td>=</td>
+          <td class="context-item-value">&quot;rss/channel/item/title&quot;</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+RSSから天気情報を取得するためのXPath
+
+</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">XPATH_XML_CITY</td>
+          <td>=</td>
+          <td class="context-item-value">&quot;rss/channel/ldWeather:source/area/pref/city&quot;</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+一次細分区分定義表から都市の一覧を取得するためのXPath
+
+</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">DEFAULT_CITY_CODE</td>
+          <td>=</td>
+          <td class="context-item-value">63</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+都市コードの初期値 (東京)
+
+</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">MIN_CITY_CODE</td>
+          <td>=</td>
+          <td class="context-item-value">1</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+都市コードの最小値（稚内）
+
+</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">MAX_CITY_CODE</td>
+          <td>=</td>
+          <td class="context-item-value">143</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+都市コードの最大値（与那国島）
+
+</td>
+        </tr>
+        </table>
+      </div>
+    </div>
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000003" class="method-detail">
+        <a name="M000003"></a>
+
+        <div class="method-heading">
+          <a href="tenki_rb.src/M000003.html" target="Code" class="method-signature"
+            onclick="popupCode('tenki_rb.src/M000003.html');return false;">
+          <span class="method-name">build_weather_summary</span><span class="method-args">(source_url_s)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <pre>
+ 一次細分区分定義表から取得したURLから週間天気を取得する。
+</pre>
+<table>
+<tr><td valign="top">@param <em>source_url_s</em> :</td><td>一次細分区分定義のsource属性に記載されているURL
+
+</td></tr>
+<tr><td valign="top">@return :</td><td>週間天気の配列
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000001" class="method-detail">
+        <a name="M000001"></a>
+
+        <div class="method-heading">
+          <a href="tenki_rb.src/M000001.html" target="Code" class="method-signature"
+            onclick="popupCode('tenki_rb.src/M000001.html');return false;">
+          <span class="method-name">create_dom</span><span class="method-args">(url_s)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <pre>
+ URLからDOMオブジェクトを作成する。
+</pre>
+<table>
+<tr><td valign="top">@param <em>url_s</em> :</td><td>URL
+
+</td></tr>
+<tr><td valign="top">@return :</td><td>DOMオブジェクト
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
+
+        <div class="method-heading">
+          <a href="tenki_rb.src/M000004.html" target="Code" class="method-signature"
+            onclick="popupCode('tenki_rb.src/M000004.html');return false;">
+          <span class="method-name">display</span><span class="method-args">(summary_list)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <pre>
+ 週間天気をコンソールに表示する。
+ 表示内容を変更する場合このメソッドの内容を編集する。
+</pre>
+<table>
+<tr><td valign="top">@param <em>sumary_list</em> :</td><td>天気予報のデータの一覧
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
+
+        <div class="method-heading">
+          <a href="tenki_rb.src/M000006.html" target="Code" class="method-signature"
+            onclick="popupCode('tenki_rb.src/M000006.html');return false;">
+          <span class="method-name">display_usage</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+使い方をコンソールに出力する
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000002" class="method-detail">
+        <a name="M000002"></a>
+
+        <div class="method-heading">
+          <a href="tenki_rb.src/M000002.html" target="Code" class="method-signature"
+            onclick="popupCode('tenki_rb.src/M000002.html');return false;">
+          <span class="method-name">search_source_url_by_city_code</span><span class="method-args">(city_code_i = DEFAULT_CITY_CODE)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <pre>
+ 都市コードから、週間天気が記載されているURLを取得する。
+
+ 一次細分区分定義表からURLを取り出す。一次細分区分定義表から、以下の
+ 要素を取り出し、city_code_iとidがマッチする要素を探索する。該当要素の
+ sourceに記載されているURLを戻り値として返却する。
+
+ &lt;city title=&quot;稚内&quot;
+          id=&quot;1&quot;
+      source=&quot;http://weather.livedoor.com/forecast/rss/1a/1.xml&quot; /&gt;
+</pre>
+<table>
+<tr><td valign="top">@param <em>city_code_i</em> :</td><td>都市コード。コードの定義は一次細分区分定義表に記載
+されているものを利用する。初期値は「東京」とする。
+
+</td></tr>
+<tr><td valign="top">@return :</td><td>都市コードに対応したURLを返却する。
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
+
+        <div class="method-heading">
+          <a href="tenki_rb.src/M000005.html" target="Code" class="method-signature"
+            onclick="popupCode('tenki_rb.src/M000005.html');return false;">
+          <span class="method-name">validate_args</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <pre>
+ コマンドライン引数の内容を検証する
+
+ 検証内容は、以下のものを行う。
+ * 引数の数チェック
+ * 都市コードの範囲チェック
+</pre>
+<table>
+<tr><td valign="top">@return :</td><td>True =&gt; 引数に問題なし False =&gt; 引数に問題あり
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

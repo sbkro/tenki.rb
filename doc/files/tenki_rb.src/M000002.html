@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>search_source_url_by_city_code (tenki.rb)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File tenki.rb, line 90</span>
+<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">search_source_url_by_city_code</span> (<span class="ruby-identifier">city_code_i</span> = <span class="ruby-constant">DEFAULT_CITY_CODE</span>)
+  <span class="ruby-identifier">forecast_map</span> = <span class="ruby-identifier">create_dom</span>(<span class="ruby-constant">FORECAST_MAP_URL</span>)
+  <span class="ruby-identifier">forecast_map</span>.<span class="ruby-identifier">elements</span>.<span class="ruby-identifier">each</span>(<span class="ruby-constant">XPATH_XML_CITY</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">element</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'id'</span>].<span class="ruby-identifier">to_i</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">city_code_i</span> <span class="ruby-keyword kw">then</span>
+         <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">element</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'source'</span>]
+      <span class="ruby-keyword kw">end</span>
+  }
+
+  <span class="ruby-comment cmt">#TODO 例外出す?</span>
+<span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
